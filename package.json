@@ -1,0 +1,25 @@
+{
+  "name": "Prog_Backend_Entregable_2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "codigo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/analopez2/Prog_Backend_Entregable_2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/analopez2/Prog_Backend_Entregable_2/issues"
+  },
+  "homepage": "https://github.com/analopez2/Prog_Backend_Entregable_2#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
