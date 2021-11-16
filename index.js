@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { restart } = require('nodemon');
 
 const obj1 = {                                                                                                                                                    
     title: 'Escuadra',                                                                                                                                 
@@ -28,14 +29,12 @@ class Contenedor{
 
     async save(obj){
         try{
-            await this.getAll()
             this.id++
             this.data.push({
-                id: this.id,
-                product: obj
+                ...obj ,id: this.id,
             })
-            await fs.promises.writeFile(this.archivo, JSON.stringify(this.data)) 
-            return this.id
+            await fs.writeFileSync(this.archivo, JSON.stringify(this.data, null, 2)) 
+            console.log(this.id)
         }catch(error){
             throw new Error(error.message)
         }
@@ -46,14 +45,12 @@ class Contenedor{
             const data = await fs.promises.readFile(this.archivo, 'utf-8')
             if(data){
                 this.data = JSON.parse(data)
-                this.data.forEach(element => {
-                    if(element.id == id) {
-                        return element.product
-                    } 
-                    else{
-                        return null
+                for (var element = 0; element < this.data.length; i++){
+                    if (this.data[element].id == id) {
+                        return element;
                     }
-                });
+                    i++;
+                };
             }
         }catch(error){
             throw new Error(error.message)
@@ -61,7 +58,8 @@ class Contenedor{
     }
     
     async getAll(){
-        try{
+        try {
+            let respuesta = [];
             const data = await fs.promises.readFile(this.archivo, 'utf-8');
             if(data){
                 this.data = JSON.parse(data)
@@ -75,27 +73,22 @@ class Contenedor{
         }
     }
     async deleteById(id){
-        try{
-            const data = await fs.promises.readFile(this.archivo, 'utf-8')
-            if(data){
-                this.data = JSON.parse(data)                
-                this.data.forEach(element => {
-                    if(element.id == id) {
-                        fs.unlink(`product/${element.id}.txt`,(error) =>{
-                        if(error){
-                            throw new Error(error.message)
-                        }else{
-                            console.log('El producto fue eliminado')
-                        }
-                    })
-                    } 
-                });
+        try {
+            let productos = await this.getAll();
+
+            for (const key in productos) {
+                if (productos[key].id == id) {
+                    productos.splice(key, 1);
+                }
             }
+            console.log(productos);
+            let contenido = JSON.stringify(productos, null, 2);
+            await fs.promises.writeFile(`${this.archivo}`, contenido);
         }catch(error){
             throw new Error(error.message)
         }
     }
-
+    
     async deleteAll(){
         fs.unlink(this.archivo, (error) => {
             if(error){
@@ -108,7 +101,7 @@ class Contenedor{
 }
 
 // -------- PRUEBAS ------//
-//const newArchivo = new Contenedor('product.txt');
+const newArchivo = new Contenedor('product.txt');
 
 // Test save //
 /* async function testSave(){
